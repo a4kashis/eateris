@@ -54,7 +54,7 @@ class Category extends StatelessWidget {
           onTap: () =>
               Navigator.of(context).push(new MaterialPageRoute(
                   builder: (context) =>
-                  SearchResult(categorySearch:image_location))),
+                  SearchResult(categorySearch:image_caption))),
           child: Row(
             children: <Widget>[
               Container(

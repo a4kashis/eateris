@@ -1,3 +1,4 @@
+import 'package:eateris/pages/login.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:eateris/pages/login.dart';
@@ -7,8 +8,7 @@ void main() {
   runApp(
     MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme:
-        ThemeData(primaryColor: Colors.white,fontFamily: 'Raleway'),
-        home: Homepage()),
+        theme: ThemeData(primaryColor: Colors.white, fontFamily: 'Raleway'),
+        home: Login()),
   );
 }

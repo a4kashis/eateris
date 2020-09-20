@@ -13,9 +13,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final GoogleSignIn googleSignIn = new GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  UserServices _userServices = UserServices();
   SharedPreferences preferences;
   bool loading = false;
   bool isLoggedin = false;
@@ -26,13 +24,9 @@ class _LoginState extends State<Login> {
     isSignedIn();
   }
 
-  void isSignedIn() async {
-    setState(() {
-      bool loading = true;
-    });
+  isSignedIn() async {
 
     preferences = await SharedPreferences.getInstance();
-    isLoggedin = await googleSignIn.isSignedIn();
 
     if (isLoggedin) {
       Navigator.pushReplacement(
@@ -48,51 +42,8 @@ class _LoginState extends State<Login> {
     setState(() {
       loading = true;
     });
+        await preferences.setString("test", 'test');
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication =
-        await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    FirebaseUser firebaseUser =
-        (await firebaseAuth.signInWithCredential(credential)).user;
-
-    if (firebaseUser != null) {
-      final QuerySnapshot result = await Firestore.instance
-          .collection("users")
-          .where("id", isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      final List<DocumentSnapshot> documents = result.documents;
-      if (documents.length == 0) {
-        //insert ther user to our collection
-        Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .setData({
-          "id": firebaseUser.uid,
-          "username": firebaseUser.displayName,
-          "profilePicture": firebaseUser.photoUrl,
-        });
-        await preferences.setString("id", firebaseUser.uid);
-        await preferences.setString("username", firebaseUser.displayName);
-        await preferences.setString("photoUrl", firebaseUser.photoUrl);
-      } else {
-        await preferences.setString("id", documents[0]['id']);
-        await preferences.setString("username", documents[1]['username']);
-        await preferences.setString("photoUrl", documents[2]['photoUrl']);
-      }
-      Fluttertoast.showToast(msg: "Login Successful");
-      setState(() {
-        loading = false;
-      });
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Homepage()));
-    } else {
-      Fluttertoast.showToast(msg: "Login Failed");
-    }
   }
 
   @override
@@ -102,8 +53,9 @@ class _LoginState extends State<Login> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: new Text(
-          "Login",
+          "DineIn with\nEATERIES",
           style: TextStyle(color: Colors.deepOrange),
+          textAlign: TextAlign.center,
         ),
         elevation: 0.1,
       ),

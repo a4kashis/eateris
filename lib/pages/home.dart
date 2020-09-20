@@ -1,3 +1,4 @@
+import 'package:eateris/pages/feedback.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eateris/components/horizontal_listview.dart';
@@ -39,6 +40,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
 //      backgroundColor: Colors.blueGrey,
         appBar: new AppBar(
+          title: Text('EATERIS'),
           elevation: 0.4,
           backgroundColor: Colors.lightGreen,
           actions: <Widget>[
@@ -68,28 +70,21 @@ class _HomepageState extends State<Homepage> {
           elevation: 0,
           child: new ListView(
             children: <Widget>[
-              // header
-              new UserAccountsDrawerHeader(
-                accountName: Text('HELLO'),
-                accountEmail: Text('Table1@eateris'),
-                currentAccountPicture: GestureDetector(
-                    child: new CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.blue,
-                          size: 40.0,
-                        ))),
-                decoration: new BoxDecoration(color: Colors.lightGreen),
+              Container(
+                // transform: Matrix4.translationValues(0.0, -40, 0.0),
+                child: Image.asset(
+                  'Images/logo.png',
+                  height: 130,
+                  fit: BoxFit.cover,
+                ),
               ),
-
               InkWell(
                 onTap: () {
                   Navigator.pop(context);
                 },
                 child: ListTile(
                     title: Text('HOME'),
-                    leading: Icon(Icons.home, color: Colors.deepOrange)),
+                    leading: Icon(Icons.home, color: Colors.green)),
               ),
               InkWell(
                 onTap: () {
@@ -97,11 +92,31 @@ class _HomepageState extends State<Homepage> {
                       MaterialPageRoute(builder: (context) => new Cart()));
                 },
                 child: ListTile(
-                  title: Text('Shopping Cart'),
-                  leading: Icon(Icons.shopping_cart, color: Colors.deepOrange),
+                  title: Text('Food Basket'),
+                  leading: Icon(Icons.shopping_cart, color: Colors.redAccent),
                 ),
               ),
-
+              InkWell(
+                onTap: () {},
+                child: ListTile(
+                    title: Text('Track Food'),
+                    leading:
+                        Icon(Icons.timelapse_outlined, color: Colors.cyan)),
+              ),
+              InkWell(
+                onTap: () {},
+                child: ListTile(
+                    title: Text('Get Bill'),
+                    leading: Icon(Icons.monetization_on_outlined,
+                        color: Colors.red)),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedBack())),
+                child: ListTile(
+                    title: Text('Feedback'),
+                    leading: Icon(Icons.feedback_outlined, color: Colors.blue)),
+              ),
               Divider(thickness: 0),
               InkWell(
                 onTap: () {
@@ -124,39 +139,11 @@ class _HomepageState extends State<Homepage> {
           SliverList(
             delegate: SliverChildListDelegate([
               new Container(
-                child: Stack(children: <Widget>[
-                  Image.asset(
-                    'Images/logo.png',
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    bottom: -1,
-                    right: 10,
-                    child: Container(
-                        height: 25,
-                        width: 120,
-                        decoration: BoxDecoration(
-                            color: Colors.lightGreen,
-//                            color: Color(0xFFE7FFAC),
-                            borderRadius: new BorderRadius.only(
-                              topLeft: const Radius.circular(30.0),
-                              topRight: const Radius.circular(30.0),
-                            )),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 8, 8.0, 0),
-                          child: Text("The Smartfood"),
-                        )),
-                  ),
-                ], overflow: Overflow.visible),
-              ),
-              new Container(
                 height: 35,
-//                decoration: BoxDecoration(color: Colors.white),
-//                decoration: BoxDecoration(color: Colors.lightGreen),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8, left: 8),
                   child: Text(
-                    'Daily Offers',
+                    'Today\'s Offers',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.teal,
@@ -180,7 +167,7 @@ class _HomepageState extends State<Homepage> {
                   new Container(
                       padding: const EdgeInsets.all(8.0),
                       child: new Text(
-                        'Veiw All products',
+                        'View All products',
                         style: TextStyle(color: Colors.teal),
                       )),
                   Icon(

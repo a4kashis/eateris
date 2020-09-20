@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:eateris/pages/product_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eateris/pages/cart.dart';
+
 
 class SearchResult extends StatefulWidget {
   final categorySearch;
@@ -16,11 +16,20 @@ class _SearchResultState extends State<SearchResult> {
   @override
   void initState() {
     super.initState();
-    getProducts().then((results) {
-      setState(() {
-        querySnapshot = results;
+
+    if (widget.categorySearch == null) {
+      getProducts().then((results) {
+        setState(() {
+          querySnapshot = results;
+        });
       });
-    });
+    } else {
+      searchByCategory(widget.categorySearch).then((results) {
+        setState(() {
+          querySnapshot = results;
+        });
+      });
+    }
   }
 
   QuerySnapshot querySnapshot;
@@ -28,43 +37,35 @@ class _SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        elevation: 4,
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          new IconButton(
-              icon: Icon(
-                Icons.notifications_none,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => new Cart()));
-              }),
-        ],
-      ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                  child: TextField(
-                onSubmitted: (text) {
-                  searchProducts(text).then((results) {
-                    setState(() {
-                      querySnapshot = results;
+            SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () => Navigator.pop(context)),
+                Expanded(
+                    child: TextField(
+                  onSubmitted: (text) {
+                    searchProducts(text).then((results) {
+                      print(results);
+                      setState(() {
+                        querySnapshot = results;
+                      });
                     });
-                  });
-                },
-                autofocus: true,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Search your Favourite Dishes',
-                    labelText: "Search your Favourite Dishes"),
-                textCapitalization: TextCapitalization.words,
-              )),
+                  },
+                  autofocus: true,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search your Favourite Dishes'),
+                  textCapitalization: TextCapitalization.words,
+                )),
+              ],
             ),
             _showProducts(),
           ],
@@ -86,7 +87,7 @@ class _SearchResultState extends State<SearchResult> {
             itemBuilder: (BuildContext context, int i) {
               return Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Single_prod(
+                child: ProductCard(
                   name: product_list[i]['name'],
                   brand: product_list[i]['brand'],
                   price: product_list[i]['price'],
@@ -99,28 +100,34 @@ class _SearchResultState extends State<SearchResult> {
       );
     } else {
       return Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.green,
+        ),
       );
     }
   }
-
-  //get firestore instance
-  getProducts() async {
-    return await Firestore.instance
-        .collection('products')
-//        .where("name", isEqualTo: searchque)
-        .getDocuments();
-  }
-
-  searchProducts(searchtext) async {
-    return await Firestore.instance
-        .collection('products')
-        .where("name", isEqualTo: searchtext)
-        .getDocuments();
-  }
 }
 
-class Single_prod extends StatelessWidget {
+//get firestore instance
+getProducts() async {
+  return await Firestore.instance.collection('products').getDocuments();
+}
+
+searchProducts(searchtext) async {
+  return await Firestore.instance
+      .collection('products')
+      .where("name", isEqualTo: searchtext)
+      .getDocuments();
+}
+
+searchByCategory(text) async {
+  return await Firestore.instance
+      .collection('products')
+      .where("category", isEqualTo: text)
+      .getDocuments();
+}
+
+class ProductCard extends StatelessWidget {
   final brand;
   final name;
   final price;
@@ -128,7 +135,7 @@ class Single_prod extends StatelessWidget {
   final picture;
   final description;
 
-  Single_prod(
+  ProductCard(
       {this.name,
       this.brand,
       this.price,
@@ -138,67 +145,55 @@ class Single_prod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 190,
-          child: Card(
-              child: Material(
-            elevation: 8,
-            child: InkWell(
-                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) => new ProductDetails(
-                          //Passing the values of the product to the product details page
-                          product_detail_name: name,
-                          product_detail_price: price,
-                          product_detail_brand: brand,
-                          product_detail_category: category,
-                          product_detail_picture: picture,
-                        ))),
-                child: GridTile(
-                  footer: Container(
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: Colors.pinkAccent,
-                          borderRadius: new BorderRadius.only(
-                            topLeft: const Radius.circular(40.0),
-                            topRight: const Radius.circular(40.0),
-//                            bottomRight: const Radius.circular(5.0),
-//                            bottomLeft: const Radius.circular(5.0),
-                          )),
-//                      color: Colors.green,
-                      child: new Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0),
-                              child: new Text(
-                                name,
-                                style: TextStyle(
-//                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15.0),
-                            child: new Text("\₹ ${price}",
-                                style: TextStyle(
-                                  letterSpacing: 0.2,
-                                  color: Colors.white,
-                                  fontFamily: 'Quicksand',
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                        ],
-                      )),
-                  child: Image.network((picture), fit: BoxFit.cover),
-                  //Image.asset("Images/products/p1.jpeg",fit: BoxFit.cover,)
+    return Container(
+      child: InkWell(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Card(
+              elevation: 8.0,
+              child: Image.network(picture,
+                  height: 100, width: double.infinity, fit: BoxFit.cover)),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 10.0),
+            child: Text(
+              name,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  letterSpacing: 1.1,
+                  color: Colors.green),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text("\₹ ${price}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Quicksand',
+                  fontSize: 16,
+                  letterSpacing: 0.2,
+                  color: Colors.black,
                 )),
-          )),
-        ),
-      ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text("\₹ ${price + (price * (30 / 100))}",
+                style: TextStyle(
+                  decoration: TextDecoration.lineThrough,
+                  letterSpacing: 0.2,
+                  color: Colors.black.withOpacity(0.6),
+                  fontFamily: 'Quicksand',
+                )),
+          ),
+        ]),
+        onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+            builder: (context) => new ProductDetails(
+                  product_detail_name: name,
+                  product_detail_price: price,
+                  product_detail_brand: brand,
+                  product_detail_category: category,
+                  product_detail_picture: picture,
+                ))),
+      ),
     );
   }
 }

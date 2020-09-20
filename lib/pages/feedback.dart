@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Buynow extends StatefulWidget {
+class FeedBack extends StatefulWidget {
   @override
-  _BuynowState createState() => _BuynowState();
+  _FeedBackState createState() => _FeedBackState();
 }
 
-class _BuynowState extends State<Buynow> {
+class _FeedBackState extends State<FeedBack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +28,7 @@ class _BuynowState extends State<Buynow> {
                       child: Image.asset('Images/logo.png'),
                     ),
                   ),
-                  SizedBox(
-                    child: Text('Music World', style: TextStyle(fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepOrange),),
-                    height: 80,
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(

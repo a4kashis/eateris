@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "851618254547",
+    "firebase_url": "https://eateris.firebaseio.com",
+    "project_id": "eateris",
+    "storage_bucket": "eateris.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851618254547:android:c26a1187476ab357c84e26",
+        "android_client_info": {
+          "package_name": "dev.eateris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851618254547-qt25hk994e4gacr46drc810tktphmudg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.eateris",
+            "certificate_hash": "b7ced7e401630d3b6882cb9fc55a877a32dc6b9e"
+          }
+        },
+        {
+          "client_id": "851618254547-i76vmfv7bbuk7hvgq8bc4gb85ntch22o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVdD66v3eD49i2-sejL7P17VFL3AoZTqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851618254547-i76vmfv7bbuk7hvgq8bc4gb85ntch22o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

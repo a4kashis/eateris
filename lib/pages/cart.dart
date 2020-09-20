@@ -8,7 +8,7 @@ import 'package:eateris/components/cart_products.dart';
 import 'package:eateris/globals.dart' as globals;
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'Feedback.dart';
+import 'feedback.dart';
 
 class Cart extends StatefulWidget {
   @override
@@ -16,14 +16,29 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  double total = 0;
+
+  @override
+  void initState() {
+    globals.cart_products.forEach((element) {
+      total = total + (element["price"] * (element["quantity"]).toDouble());
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
         elevation: 0.1,
         backgroundColor: Colors.lightGreen,
+        leading: IconButton(
+          onPressed: ()=>Navigator.pop(context),
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+        ),
         title: Text(
-          "Cart",
+          "My Orders",
           style: TextStyle(color: Colors.white),
         ),
         actions: <Widget>[
@@ -57,7 +72,7 @@ class _CartState extends State<Cart> {
                       onPressed: minus,
                       icon: new Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.pinkAccent,
+                        color: Colors.green,
                         size: 30,
                       ),
                     ),
@@ -66,7 +81,7 @@ class _CartState extends State<Cart> {
                       onPressed: add,
                       icon: new Icon(
                         Icons.arrow_forward_ios,
-                        color: Colors.pinkAccent,
+                        color: Colors.green,
                         size: 30,
                       ),
                     ),
@@ -84,17 +99,19 @@ class _CartState extends State<Cart> {
           children: <Widget>[
             Expanded(
                 child: ListTile(
-              title: new Text('Total'),
-              subtitle: new Text('\₹500'),
+              title: new Text('Total Payable'),
+              subtitle: new Text('\₹$total'),
             )),
             Expanded(
               child: new MaterialButton(
                   onPressed: () {
                     validateAndUpload();
                   },
-                  color: Colors.pinkAccent,
+                  color: Colors.green,
                   child: new Text("Place Order",
-                      style: TextStyle(color: Colors.white))),
+                      style: TextStyle(
+                        fontSize: 17.0,
+                          color: Colors.white, fontWeight: FontWeight.w500))),
             )
           ],
         ),

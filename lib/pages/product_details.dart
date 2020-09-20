@@ -1,10 +1,9 @@
 import 'package:eateris/globals.dart';
 import 'package:flutter/material.dart';
 import './home.dart';
-import './Feedback.dart';
+import './feedback.dart';
 import './cart.dart';
 import 'package:eateris/globals.dart' as globals;
-import 'package:numberpicker/numberpicker.dart';
 
 class ProductDetails extends StatefulWidget {
   final product_detail_name;
@@ -36,53 +35,50 @@ class _ProductDetailsState extends State<ProductDetails> {
   Widget build(BuildContext context) {
     bool isFavorite = false;
     return Scaffold(
-      appBar: new AppBar(
-        elevation: 0.1,
-        backgroundColor: Colors.lightGreen,
-        title: InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => new Homepage()));
-            },
-            child: Text("Eateris")),
-        actions: <Widget>[
-          new IconButton(
-              icon: Icon(
-                Icons.shopping_cart,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => new Cart()));
-              }),
-        ],
-      ),
-      body: new ListView(
+      body: Column(
         children: <Widget>[
-          new Container(
-              height: 300.0,
-              child: GridTile(
+          Stack(children: <Widget>[
+            Container(
+                transform: Matrix4.translationValues(0.0, -0.0, 0.0),
+                child: Image.network(widget.product_detail_picture,
+                    height: 280, fit: BoxFit.cover)),
+            Positioned(
+              top: 40,
+              left: 8.0,
+              child: Align(
+                alignment: Alignment.topCenter,
                 child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.8),
+                      borderRadius: BorderRadius.all(Radius.circular(100.0))),
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.arrow_back),
                     color: Colors.white,
-                    child: Image.network(widget.product_detail_picture)),
-                footer: new Container(
+                  ),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     color: Colors.white70,
-                    child: ListTile(
-                      leading: new Text(widget.product_detail_name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20.0)),
-                      title: new Row(
-                        children: <Widget>[
-                          Expanded(
-                              child: new Text(
-                                  "\₹${widget.product_detail_price}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red))),
-                        ],
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 18.0),
+                        child: new Text(widget.product_detail_name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20.0)),
                       ),
-                    )),
-              )),
+                      Text("\₹${widget.product_detail_price}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.red)),
+                    ])),
+              ),
+            ),
+          ]),
 
           //==========Buttons ROW ============
           Row(
@@ -90,13 +86,10 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: MaterialButton(
                   onPressed: () {
-
-                    print(globals.customDesc = descController.text);
-
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => new Buynow()));
+                        MaterialPageRoute(builder: (context) => new FeedBack()));
                   },
-                  color: Colors.pinkAccent,
+                  color: Colors.green,
                   textColor: Colors.white,
                   elevation: 0.2,
                   child: new Text("Order Now"),
@@ -115,6 +108,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       "price": widget.product_detail_price,
                       "picture": widget.product_detail_picture,
                     });
+                    print('qty$_n');
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => new Cart()));
                   }),
@@ -162,7 +156,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
               new Text(
 //                widget.product_detail_description +
-                    "Delicious mixed vegetable patties in burger buns with sauce & simple mayo hung curd \nWith love - Eateris",
+                "Delicious mixed vegetable patties in burger buns with sauce & simple mayo hung curd \nWith love - Eateris",
                 style: TextStyle(height: 1.5),
               ),
               Row(children: <Widget>[
@@ -178,7 +172,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                   },
                 ),
                 Text("Custom Description"),
-
                 Checkbox(
                   value: custom,
                   checkColor: Colors.white,
@@ -190,22 +183,19 @@ class _ProductDetailsState extends State<ProductDetails> {
                   },
                 )
               ]),
-              new Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    maxLines: 4,
-                    controller: descController,
-//                    onSubmitted: (String str) {
-//                      setState(() {
-//                        globals.customDesc = str;
-//                      });
-//                    },
-                    decoration: InputDecoration.collapsed(
-                        hintText: "Any Changes to dish?"),
-                  ),
-                ),
-              ),
+              custom
+                  ? Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          maxLines: 4,
+                          controller: descController,
+                          decoration: InputDecoration.collapsed(
+                              hintText: "Any Changes to dish?"),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ]),
           ),
           Divider(),
@@ -214,19 +204,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             children: <Widget>[
               Padding(
                   padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                  child: new Text("Food Name:",
-                      style: TextStyle(color: Colors.grey))),
-              Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: new Text(widget.product_detail_name))
-            ],
-          ),
-
-          new Row(
-            children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                  child: new Text("Food Category:",
+                  child: new Text("Category:",
                       style: TextStyle(color: Colors.grey))),
               Padding(
                   padding: EdgeInsets.all(5.0),
